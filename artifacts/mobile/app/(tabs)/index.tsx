@@ -149,8 +149,33 @@ export default function PredictionScreen() {
               </Text>
             </View>
           )}
+
+          <View style={[styles.legendCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
+              <Text style={[styles.legendText, { color: colors.success }]}>
+                Valor máximo: aproximadamente{" "}
+                <Text style={styles.legendBold}>
+                  {Math.round(3.4 * result.totalHours)} corridas
+                </Text>
+              </Text>
+            </View>
+            <View style={styles.legendRow}>
+              <View style={[styles.legendDot, { backgroundColor: colors.destructive }]} />
+              <Text style={[styles.legendText, { color: colors.destructive }]}>
+                Valor mínimo: abaixo de{" "}
+                <Text style={styles.legendBold}>
+                  {Math.round(2.0 * result.totalHours)} corridas
+                </Text>
+              </Text>
+            </View>
+          </View>
         </View>
       )}
+
+      <Text style={[styles.footer, { color: colors.mutedForeground }]}>
+        Desenvolvido por Nexor-tec — 2026
+      </Text>
     </ScrollView>
   );
 }
@@ -292,5 +317,37 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Inter_500Medium",
     flex: 1,
+  },
+  legendCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 14,
+    gap: 10,
+  },
+  legendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  legendText: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    flex: 1,
+  },
+  legendBold: {
+    fontFamily: "Inter_700Bold",
+  },
+  footer: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    marginTop: 8,
+    marginBottom: 4,
+    opacity: 0.5,
   },
 });

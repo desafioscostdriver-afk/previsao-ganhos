@@ -32,15 +32,29 @@ export default function RealScreen() {
   const [endHour, setEndHour] = useState(12);
   const [endMinute, setEndMinute] = useState(0);
   const [category, setCategory] = useState<Category>("X");
-  const [earnedText, setEarnedText] = useState("");
+  const [earnedRaw, setEarnedRaw] = useState("");
   const [ridesText, setRidesText] = useState("");
   const [result, setResult] = useState<RealResult | null>(null);
   const [showCategoryInfo, setShowCategoryInfo] = useState(false);
 
+  const handleEarnedChange = (text: string) => {
+    const digits = text.replace(/\D/g, "").slice(0, 8);
+    setEarnedRaw(digits);
+  };
+
+  const earnedDisplay = earnedRaw
+    ? (parseInt(earnedRaw, 10) / 100).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    : "";
+
+  const earnedValue = earnedRaw ? parseInt(earnedRaw, 10) / 100 : 0;
+
   const handleAnalyze = () => {
-    const earned = parseFloat(earnedText.replace(",", "."));
+    const earned = earnedValue;
     const rides = parseInt(ridesText, 10);
-    if (isNaN(earned) || isNaN(rides) || earned < 0 || rides < 0) {
+    if (earned <= 0 || isNaN(rides) || rides < 0) {
       return;
     }
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -131,11 +145,11 @@ export default function RealScreen() {
               <Text style={[styles.inputPrefix, { color: colors.mutedForeground }]}>R$</Text>
               <TextInput
                 style={[styles.input, { color: colors.foreground }]}
-                value={earnedText}
-                onChangeText={setEarnedText}
+                value={earnedDisplay}
+                onChangeText={handleEarnedChange}
                 placeholder="0,00"
                 placeholderTextColor={colors.mutedForeground}
-                keyboardType="decimal-pad"
+                keyboardType="number-pad"
                 returnKeyType="done"
               />
             </View>
@@ -340,6 +354,10 @@ export default function RealScreen() {
           </View>
         );
       })()}
+
+      <Text style={[styles.footer, { color: colors.mutedForeground }]}>
+        Desenvolvido por Nexor-tec — 2026
+      </Text>
     </ScrollView>
   );
 }
@@ -416,7 +434,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter_600SemiBold",
     padding: 0,
-  },
+    outlineWidth: 0,
+  } as any,
   categoryCardHeader: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -544,5 +563,13 @@ const styles = StyleSheet.create({
   diffText: {
     fontSize: 12,
     fontFamily: "Inter_400Regular",
+  },
+  footer: {
+    fontSize: 11,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    marginTop: 8,
+    marginBottom: 4,
+    opacity: 0.5,
   },
 });
