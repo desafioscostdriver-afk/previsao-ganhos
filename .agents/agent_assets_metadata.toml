@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "y0e20fwPr9rsDC_1m8CwI"
+uri = "file://artifacts/mobile/assets/images/icon.png"
+type = "image"
+title = "driver pro icon"
