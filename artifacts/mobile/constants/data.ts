@@ -2,8 +2,8 @@ export type Category = "X" | "Confort" | "Black";
 
 export const CATEGORY_MULTIPLIERS: Record<Category, number> = {
   X: 1.0,
-  Confort: 1.156,
-  Black: 1.345,
+  Confort: 1.100,
+  Black: 1.267,
 };
 
 export const CATEGORY_LABELS: Record<Category, string> = {
