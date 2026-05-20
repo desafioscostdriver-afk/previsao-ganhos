@@ -1,0 +1,15 @@
+input,
+textarea,
+select,
+[contenteditable] {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+[contenteditable]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
