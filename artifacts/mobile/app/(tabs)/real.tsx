@@ -190,7 +190,7 @@ export default function RealScreen() {
               result.earnedPerHour,
               pred.avgMinPerHour,
               pred.avgMaxPerHour,
-              parseFloat(earnedText.replace(",", ".")),
+              earnedValue,
               pred.totalMax,
               result.productivityIndex
             )
@@ -420,7 +420,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     gap: 4,
-  },
+    outlineWidth: 0,
+  } as any,
   inputPrefix: {
     fontSize: 14,
     fontFamily: "Inter_500Medium",

@@ -13,6 +13,7 @@ import { Feather } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import TimeSelector from "@/components/TimeSelector";
 import CategorySelector from "@/components/CategorySelector";
+import { CATEGORY_IDEAL_RIDES_PER_HOUR } from "@/constants/data";
 import DateNavigator from "@/components/DateNavigator";
 import { calculatePrediction, formatCurrency, formatHours } from "@/utils/calculations";
 import type { PredictionResult } from "@/utils/calculations";
@@ -156,7 +157,7 @@ export default function PredictionScreen() {
               <Text style={[styles.legendText, { color: colors.success }]}>
                 Valor máximo: aproximadamente{" "}
                 <Text style={styles.legendBold}>
-                  {Math.round(3.4 * result.totalHours)} corridas
+                  {Math.round(CATEGORY_IDEAL_RIDES_PER_HOUR[category] * result.totalHours)} corridas
                 </Text>
               </Text>
             </View>
