@@ -19,13 +19,13 @@ export const CATEGORY_IDEAL_RIDES_PER_HOUR: Record<Category, number> = {
 };
 
 export const DAY_MULTIPLIERS: Record<number, number> = {
-  0: 1.275,
+  0: 1.124,
   1: 1.0,
   2: 1.0,
   3: 1.0,
   4: 1.0,
   5: 1.0,
-  6: 1.156,
+  6: 1.094,
 };
 
 export const DAY_NAMES = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
