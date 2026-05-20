@@ -118,6 +118,12 @@ export default function PredictionScreen() {
                 <Text style={[styles.rangeValue, { color: colors.warning }]}>
                   {formatCurrency(result.totalMin)}
                 </Text>
+                <Text style={[styles.rangeAvgLabel, { color: colors.mutedForeground }]}>
+                  média/h
+                </Text>
+                <Text style={[styles.rangeAvgValue, { color: colors.warning }]}>
+                  {formatCurrency(result.avgMinPerHour)}
+                </Text>
               </View>
               <View style={[styles.rangeSep, { backgroundColor: colors.border }]} />
               <View style={styles.rangeItem}>
@@ -125,22 +131,13 @@ export default function PredictionScreen() {
                 <Text style={[styles.rangeValue, { color: colors.success }]}>
                   {formatCurrency(result.totalMax)}
                 </Text>
+                <Text style={[styles.rangeAvgLabel, { color: colors.mutedForeground }]}>
+                  média/h
+                </Text>
+                <Text style={[styles.rangeAvgValue, { color: colors.success }]}>
+                  {formatCurrency(result.avgMaxPerHour)}
+                </Text>
               </View>
-            </View>
-          </View>
-
-          <View style={styles.statsRow}>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Média/hora mín.</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>
-                {formatCurrency(result.avgMinPerHour)}
-              </Text>
-            </View>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Média/hora máx.</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>
-                {formatCurrency(result.avgMaxPerHour)}
-              </Text>
             </View>
           </View>
 
@@ -249,9 +246,20 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: "Inter_700Bold",
   },
+  rangeAvgLabel: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginTop: 6,
+  },
+  rangeAvgValue: {
+    fontSize: 14,
+    fontFamily: "Inter_600SemiBold",
+  },
   rangeSep: {
     width: 1,
-    height: 48,
+    height: 80,
   },
   statsRow: {
     flexDirection: "row",

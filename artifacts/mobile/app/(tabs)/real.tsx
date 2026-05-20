@@ -19,6 +19,7 @@ import IPGauge from "@/components/IPGauge";
 import { calculateReal, formatCurrency, formatHours } from "@/utils/calculations";
 import type { RealResult } from "@/utils/calculations";
 import type { Category } from "@/constants/data";
+import { getMotivationalMessage, getPerformanceLevel } from "@/constants/messages";
 
 export default function RealScreen() {
   const colors = useColors();
@@ -150,120 +151,177 @@ export default function RealScreen() {
         </Text>
       </TouchableOpacity>
 
-      {result !== null && (
-        <View style={styles.resultsContainer}>
-          <IPGauge value={result.productivityIndex} />
+      {result !== null && (() => {
+        const pred = result.prediction;
+        const level = pred
+          ? getPerformanceLevel(
+              result.earnedPerHour,
+              pred.avgMinPerHour,
+              pred.avgMaxPerHour,
+              parseFloat(earnedText.replace(",", ".")),
+              pred.totalMax,
+              result.productivityIndex
+            )
+          : null;
 
-          <View style={styles.statsRow}>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Horas trabalhadas</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>
-                {formatHours(result.hoursWorked)}
-              </Text>
-            </View>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Corridas/hora</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>
-                {result.ridesPerHour.toFixed(1)}<Text style={[styles.statUnit, { color: colors.mutedForeground }]}>/h</Text>
-              </Text>
-            </View>
-          </View>
+        const seed = date.getDay() + (parseInt(ridesText, 10) || 0);
+        const message = level ? getMotivationalMessage(level, seed) : null;
 
-          <View style={styles.statsRow}>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Ganho/hora real</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>
-                {formatCurrency(result.earnedPerHour)}
-              </Text>
-            </View>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Meta corridas/h</Text>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>
-                {result.idealRidesPerHour.toFixed(1)}<Text style={[styles.statUnit, { color: colors.mutedForeground }]}>/h</Text>
-              </Text>
-            </View>
-          </View>
+        const levelColor =
+          level === "red"
+            ? colors.destructive
+            : level === "orange"
+            ? colors.warning
+            : level === "green"
+            ? colors.success
+            : colors.accent;
 
-          {result.prediction !== null && (
-            <View style={[styles.comparisonCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.comparisonTitle, { color: colors.foreground }]}>
-                Comparação com a Previsão
-              </Text>
-              <View style={styles.comparisonRow}>
-                <View style={styles.comparisonItem}>
-                  <Text style={[styles.comparisonLabel, { color: colors.mutedForeground }]}>Mínimo previsto</Text>
-                  <Text style={[styles.comparisonValue, { color: colors.warning }]}>
-                    {formatCurrency(result.prediction.totalMin)}
-                  </Text>
-                </View>
-                <View style={styles.comparisonItem}>
-                  <Text style={[styles.comparisonLabel, { color: colors.mutedForeground }]}>Máximo previsto</Text>
-                  <Text style={[styles.comparisonValue, { color: colors.success }]}>
-                    {formatCurrency(result.prediction.totalMax)}
-                  </Text>
-                </View>
+        return (
+          <View style={styles.resultsContainer}>
+            <IPGauge value={result.productivityIndex} />
+
+            <View style={styles.statsRow}>
+              <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Horas trabalhadas</Text>
+                <Text style={[styles.statValue, { color: colors.foreground }]}>
+                  {formatHours(result.hoursWorked)}
+                </Text>
               </View>
+              <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Corridas/hora</Text>
+                <Text style={[styles.statValue, { color: colors.foreground }]}>
+                  {result.ridesPerHour.toFixed(1)}<Text style={[styles.statUnit, { color: colors.mutedForeground }]}>/h</Text>
+                </Text>
+              </View>
+            </View>
 
-              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+            <View style={styles.statsRow}>
+              <View style={[
+                styles.statCard,
+                { backgroundColor: level ? levelColor + "15" : colors.card, borderColor: level ? levelColor + "50" : colors.border },
+              ]}>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Ganho/hora real</Text>
+                <Text style={[styles.statValue, { color: level ? levelColor : colors.foreground }]}>
+                  {formatCurrency(result.earnedPerHour)}
+                </Text>
+              </View>
+              <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Meta corridas/h</Text>
+                <Text style={[styles.statValue, { color: colors.foreground }]}>
+                  {result.idealRidesPerHour.toFixed(1)}<Text style={[styles.statUnit, { color: colors.mutedForeground }]}>/h</Text>
+                </Text>
+              </View>
+            </View>
 
-              <View style={styles.vsRow}>
-                <View
-                  style={[
-                    styles.vsBadge,
-                    {
-                      backgroundColor:
-                        result.isAboveMin
-                          ? result.isBelowMax
-                            ? colors.success + "20"
-                            : colors.accent + "20"
-                          : colors.destructive + "20",
-                    },
-                  ]}
-                >
-                  <Feather
-                    name={result.isAboveMin ? "check-circle" : "alert-circle"}
-                    size={16}
-                    color={
-                      result.isAboveMin
-                        ? result.isBelowMax
-                          ? colors.success
-                          : colors.accent
-                        : colors.destructive
-                    }
-                  />
-                  <Text
+            {message !== null && (
+              <View style={[
+                styles.motivationCard,
+                { backgroundColor: levelColor + "15", borderColor: levelColor + "40" },
+              ]}>
+                <Feather
+                  name={
+                    level === "atypical" ? "alert-triangle" :
+                    level === "green" ? "award" :
+                    level === "orange" ? "trending-up" : "info"
+                  }
+                  size={16}
+                  color={levelColor}
+                />
+                <Text style={[styles.motivationText, { color: levelColor }]}>
+                  {message}
+                </Text>
+              </View>
+            )}
+
+            {pred !== null && (
+              <View style={[styles.comparisonCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.comparisonTitle, { color: colors.foreground }]}>
+                  Comparação com a Previsão
+                </Text>
+                <View style={styles.comparisonRow}>
+                  <View style={styles.comparisonItem}>
+                    <Text style={[styles.comparisonLabel, { color: colors.mutedForeground }]}>Mínimo previsto</Text>
+                    <Text style={[styles.comparisonValue, { color: colors.warning }]}>
+                      {formatCurrency(pred.totalMin)}
+                    </Text>
+                    <Text style={[styles.comparisonAvgLabel, { color: colors.mutedForeground }]}>média/h</Text>
+                    <Text style={[styles.comparisonAvgValue, { color: colors.warning }]}>
+                      {formatCurrency(pred.avgMinPerHour)}
+                    </Text>
+                  </View>
+                  <View style={styles.comparisonItem}>
+                    <Text style={[styles.comparisonLabel, { color: colors.mutedForeground }]}>Máximo previsto</Text>
+                    <Text style={[styles.comparisonValue, { color: colors.success }]}>
+                      {formatCurrency(pred.totalMax)}
+                    </Text>
+                    <Text style={[styles.comparisonAvgLabel, { color: colors.mutedForeground }]}>média/h</Text>
+                    <Text style={[styles.comparisonAvgValue, { color: colors.success }]}>
+                      {formatCurrency(pred.avgMaxPerHour)}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+                <View style={styles.vsRow}>
+                  <View
                     style={[
-                      styles.vsText,
+                      styles.vsBadge,
                       {
-                        color:
+                        backgroundColor:
                           result.isAboveMin
                             ? result.isBelowMax
-                              ? colors.success
-                              : colors.accent
-                            : colors.destructive,
+                              ? colors.success + "20"
+                              : colors.accent + "20"
+                            : colors.destructive + "20",
                       },
                     ]}
                   >
-                    {result.isAboveMin && result.isBelowMax
-                      ? "Dentro da faixa esperada"
-                      : result.isAboveMin && !result.isBelowMax
-                      ? "Acima do máximo previsto"
-                      : "Abaixo do mínimo previsto"}
-                  </Text>
+                    <Feather
+                      name={result.isAboveMin ? "check-circle" : "alert-circle"}
+                      size={16}
+                      color={
+                        result.isAboveMin
+                          ? result.isBelowMax
+                            ? colors.success
+                            : colors.accent
+                          : colors.destructive
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.vsText,
+                        {
+                          color:
+                            result.isAboveMin
+                              ? result.isBelowMax
+                                ? colors.success
+                                : colors.accent
+                              : colors.destructive,
+                        },
+                      ]}
+                    >
+                      {result.isAboveMin && result.isBelowMax
+                        ? "Dentro da faixa esperada"
+                        : result.isAboveMin && !result.isBelowMax
+                        ? "Acima do máximo previsto"
+                        : "Abaixo do mínimo previsto"}
+                    </Text>
+                  </View>
                 </View>
-              </View>
 
-              {result.vsMinDiff !== null && (
-                <Text style={[styles.diffText, { color: colors.mutedForeground }]}>
-                  {result.vsMinDiff >= 0
-                    ? `+${formatCurrency(result.vsMinDiff)} acima do mínimo`
-                    : `${formatCurrency(result.vsMinDiff)} abaixo do mínimo`}
-                </Text>
-              )}
-            </View>
-          )}
-        </View>
-      )}
+                {result.vsMinDiff !== null && (
+                  <Text style={[styles.diffText, { color: colors.mutedForeground }]}>
+                    {result.vsMinDiff >= 0
+                      ? `+${formatCurrency(result.vsMinDiff)} acima do mínimo`
+                      : `${formatCurrency(result.vsMinDiff)} abaixo do mínimo`}
+                  </Text>
+                )}
+              </View>
+            )}
+          </View>
+        );
+      })()}
     </ScrollView>
   );
 }
@@ -405,6 +463,31 @@ const styles = StyleSheet.create({
   comparisonValue: {
     fontSize: 20,
     fontFamily: "Inter_700Bold",
+  },
+  comparisonAvgLabel: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginTop: 4,
+  },
+  comparisonAvgValue: {
+    fontSize: 13,
+    fontFamily: "Inter_600SemiBold",
+  },
+  motivationCard: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  motivationText: {
+    fontSize: 13,
+    fontFamily: "Inter_500Medium",
+    flex: 1,
+    lineHeight: 20,
   },
   divider: {
     height: 1,
