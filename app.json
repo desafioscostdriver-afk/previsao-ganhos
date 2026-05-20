@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "4eaca5bc-8206-409d-a4b0-4844383f2d29"
+      }
+    },
+    "android": {
+      "package": "com.soma.app.workspace"
+    }
+  }
+}
