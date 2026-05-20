@@ -17,7 +17,8 @@
       "supportsTablet": false
     },
     "android": {
-      "backgroundColor": "#0A0E1A"
+      "backgroundColor": "#0A0E1A",
+      "package": "com.soma.app.mobile"
     },
     "web": {
       "favicon": "./assets/images/icon.png"
@@ -35,6 +36,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a6d14385-4ea7-4883-989a-186887a92ac5"
+      }
     }
   }
 }
