@@ -20,6 +20,7 @@ import { calculateReal, formatCurrency, formatHours } from "@/utils/calculations
 import type { RealResult } from "@/utils/calculations";
 import type { Category } from "@/constants/data";
 import { getMotivationalMessage, getPerformanceLevel } from "@/constants/messages";
+import CategoryInfoModal from "@/components/CategoryInfoModal";
 
 export default function RealScreen() {
   const colors = useColors();
@@ -34,6 +35,7 @@ export default function RealScreen() {
   const [earnedText, setEarnedText] = useState("");
   const [ridesText, setRidesText] = useState("");
   const [result, setResult] = useState<RealResult | null>(null);
+  const [showCategoryInfo, setShowCategoryInfo] = useState(false);
 
   const handleAnalyze = () => {
     const earned = parseFloat(earnedText.replace(",", "."));
@@ -101,8 +103,24 @@ export default function RealScreen() {
       </View>
 
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <CategorySelector selected={category} onSelect={setCategory} />
+        <View style={styles.categoryCardHeader}>
+          <View style={styles.categoryCardFlex}>
+            <CategorySelector selected={category} onSelect={setCategory} />
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowCategoryInfo(true)}
+            style={[styles.infoBtn, { backgroundColor: colors.secondary }]}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Feather name="info" size={15} color={colors.accent} />
+          </TouchableOpacity>
+        </View>
       </View>
+
+      <CategoryInfoModal
+        visible={showCategoryInfo}
+        onClose={() => setShowCategoryInfo(false)}
+      />
 
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>Dados da Jornada</Text>
@@ -398,6 +416,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter_600SemiBold",
     padding: 0,
+  },
+  categoryCardHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
+  },
+  categoryCardFlex: {
+    flex: 1,
+  },
+  infoBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 2,
   },
   analyzeButton: {
     flexDirection: "row",
